@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import Colon from './Colon';
 import Digit from './Digit';
 
-const Wrapper = styled.div`
+const Wrapper = styled.time`
     position: relative;
     width: 100vw;
     height: 100vh;
@@ -17,6 +18,20 @@ function App() {
     const [hour, setHour] = useState([0, 0]);
     const [minute, setMinute] = useState([0, 0]);
     const [second, setSecond] = useState([0, 0]);
+    const [size, setSize] = useState(40);
+
+    const onResize = () => {
+        setSize((window.innerWidth  - 100) / 34);
+    }
+
+    useEffect(() => {
+        setSize((window.innerWidth  - 100) / 34);
+        window.addEventListener('resize', onResize);
+
+        return () => {
+            window.removeEventListener('resize', onResize);
+        }
+    }, [])
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -45,18 +60,22 @@ function App() {
     }, [time]);
 
     return (
-        <Wrapper>
+        <Wrapper dateTime={time.toISOString()}>
             {/* Hour */}
-            <Digit number={hour[0]} />
-            <Digit number={hour[1]} />
+            <Digit size={size} number={hour[0]} />
+            <Digit size={size} number={hour[1]} />
+
+            <Colon size={size} />
 
             {/* Minute */}
-            <Digit number={minute[0]} />
-            <Digit number={minute[1]} />
+            <Digit size={size} number={minute[0]} />
+            <Digit size={size} number={minute[1]} />
 
-            {/* Secund */}
-            <Digit number={second[0]} />
-            <Digit number={second[1]} />
+            <Colon size={size} />
+
+            {/* Second */}
+            <Digit size={size} number={second[0]} />
+            <Digit size={size} number={second[1]} />
         </Wrapper>
     );
 }
